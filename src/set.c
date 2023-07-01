@@ -32,8 +32,10 @@ static void set_tostring(void *data, JanetBuffer *buffer) {
 }
 
 static Janet cfun_union(int32_t argc, Janet *argv);
+static Janet cfun_difference(int32_t argc, Janet *argv);
 static const JanetMethod set_methods[] = {
   {"+", cfun_union},
+  {"-", cfun_difference},
   {NULL, NULL}
 };
 
@@ -116,17 +118,39 @@ static void *set_unmarshal(JanetMarshalContext *ctx) {
   return set;
 }
 
+static void set_put(void *data, Janet key, Janet value){
+  JanetTable *set = (JanetTable *)data;
+  janet_table_put(set, key, janet_wrap_true());
+}
+
+static int32_t set_hash(void *p, size_t len){
+  return janet_struct_hash(janet_table_to_struct((JanetTable *)p));
+}
+
+static int set_compare(void *lhs, void *rhs){ // misleading
+  int32_t a = ((JanetTable *)lhs)->count;
+  int32_t b = ((JanetTable *)rhs)->count;
+  int c = (a > b) - (a < b);
+  if(c != 0){
+    return c;
+  }
+  // TODO is hashing here enough? collision might occur here when the user does not expect them here!
+  a = set_hash(lhs,0);
+  b = set_hash(rhs, 0);
+  return (a > b) - (a < b);
+}
+
 static const JanetAbstractType set_type = {
   .name = "set",
   .gc = set_gc,
   .gcmark = set_gcmark,
   .get = set_get,
-  .put = NULL,
+  .put = set_put,
   .marshal = set_marshal,
   .unmarshal = set_unmarshal,
   .tostring = set_tostring,
-  .compare = NULL,
-  .hash = NULL,
+  .compare = set_compare,
+  .hash = set_hash,
   .next = set_next,
   .call = set_call,
   .length = set_length,
@@ -167,7 +191,7 @@ static Janet cfun_new(int32_t argc, Janet *argv) {
   return janet_wrap_abstract(set);
 }
 
-static Janet cfun_union(int32_t argc, Janet *argv) {
+static JanetTable *set_union(int32_t argc, Janet *argv){
   JanetTable *result = new_abstract_set();
 
   for (int32_t arg_ix = 0; arg_ix < argc; arg_ix++) {
@@ -180,6 +204,90 @@ static Janet cfun_union(int32_t argc, Janet *argv) {
       janet_table_put(result, entry->key, janet_wrap_true());
     }
   }
+  return result;
+}
+
+static Janet cfun_union(int32_t argc, Janet *argv) {
+    return janet_wrap_abstract(set_union(argc, argv));
+}
+
+static JanetTable *set_clone(JanetTable *oldSet){
+  JanetTable *newSet = new_abstract_set();
+
+  newSet->count = oldSet->count;
+  newSet->capacity = oldSet->capacity;
+  newSet->deleted = oldSet->deleted;
+  newSet->proto = oldSet->proto;
+  newSet->data = janet_malloc(newSet->capacity * sizeof(JanetKV));
+  if (NULL == newSet->data) {
+      JANET_OUT_OF_MEMORY;
+  }
+  memcpy(newSet->data, oldSet->data, (size_t) oldSet->capacity * sizeof(JanetKV));
+  return newSet;
+}
+
+static Janet cfun_clone(int32_t argc, Janet *argv){
+  janet_arity(argc, 1, 1);
+  return janet_wrap_abstract(set_clone(janet_getabstract(argv, 0, &set_type)));
+}
+
+static JanetTable *set_intersection(int32_t argc, Janet *argv){
+  JanetTable *result = new_abstract_set();
+
+  JanetTable *arg = (JanetTable *)janet_getabstract(argv, 0, &set_type);
+  for (int32_t bucket_ix = 0; bucket_ix < arg->capacity; bucket_ix++) {
+    JanetKV *entry = &arg->data[bucket_ix];
+    if (janet_checktype(entry->key, JANET_NIL)) {
+      continue;
+    }
+    int useKey = 1;
+    for(int32_t arg_ix = 1; arg_ix < argc; arg_ix++){
+      JanetTable *t = (JanetTable *)janet_getabstract(argv, arg_ix, &set_type);
+      Janet res = janet_table_get(t, entry->key);
+      if(janet_checktype(res, JANET_NIL)){
+        useKey = 0;
+        break;
+      }
+    }
+    if(useKey){
+      janet_table_put(result, entry->key, janet_wrap_true());
+    }
+  }
+  return result;
+}
+
+static Janet cfun_intersection(int32_t argc, Janet *argv) {
+  return janet_wrap_abstract(set_intersection(argc, argv));
+}
+
+static Janet cfun_difference(int32_t argc, Janet *argv) {
+  janet_arity(argc, 1, -1);
+  JanetTable *result = set_clone(janet_getabstract(argv, 0, &set_type));
+  JanetTable *others = set_union(argc-1, argv+1);
+
+  for (int32_t bucket_ix = 0; bucket_ix < others->capacity; bucket_ix++) {
+    JanetKV *entry = &others->data[bucket_ix];
+    if (janet_checktype(entry->key, JANET_NIL)) {
+      continue;
+    }
+    janet_table_remove(result, entry->key);
+  }
+
+  return janet_wrap_abstract(result);
+}
+
+static Janet cfun_symmetric_difference(int32_t argc, Janet *argv) {
+  janet_arity(argc, 1, -1);
+  JanetTable *result = set_union(argc, argv);
+  JanetTable *intersection = set_intersection(argc, argv);
+
+  for (int32_t bucket_ix = 0; bucket_ix < intersection->capacity; bucket_ix++) {
+    JanetKV *entry = &intersection->data[bucket_ix];
+    if (janet_checktype(entry->key, JANET_NIL)) {
+      continue;
+    }
+    janet_table_remove(result, entry->key);
+  }
 
   return janet_wrap_abstract(result);
 }
@@ -187,12 +295,20 @@ static Janet cfun_union(int32_t argc, Janet *argv) {
 static const JanetReg cfuns[] = {
   {"new", cfun_new, "(set/new & xs)\n\n"
     "Returns a new set containing the input elements."},
+  {"clone", cfun_clone, "(set/clone set)\n\n"
+    "Returns a new set containing the input elements of the input set."},
   {"add", cfun_add, "(set/add set & xs)\n\n"
     "Add input elements to a set."},
   {"remove", cfun_remove, "(set/remove set & xs)\n\n"
     "Remove input elements from a set."},
   {"union", cfun_union, "(set/union & xs)\n\n"
     "Returns the union of the input sets."},
+  {"difference", cfun_difference, "(set/difference base & xs)\n\n"
+    "Returns the base set without the other input sets"},
+  {"symmetric-difference", cfun_symmetric_difference, "(set/symmetric-difference & xs)\n\n"
+    "Returns the union of the sets without the intersection of them"},
+  {"intersection", cfun_intersection, "(set/intersection & xs)\n\n"
+    "Returns the intersection of the input sets."},
   {NULL, NULL, NULL}
 };
 

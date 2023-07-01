@@ -11,5 +11,5 @@
   :source ["tools"])
 
 (declare-native
-  :name "tools/set/native"
+  :name "tools/set"
   :source ["src/set.c"])

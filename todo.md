@@ -1,4 +1,5 @@
 # Features maybe to add in the future
+- [ ] add graph handling (mainly for dags?)
 - [ ] add big integers (use code from https://github.com/andrewchambers/janet-big) and arbitrary precision floats
 - [ ] file watching (use inotify on unix-like but on windows?)
 - [ ] simple testing library based on deno's and maybe taking inspiration from other janet testing libs
