@@ -1,5 +1,5 @@
 (declare-project
-  :name "tools"
+  :name "toolbox"
   :description "a collection of useful janet functions, libraries and more"
   :dependencies ["https://github.com/janet-lang/spork.git"]
   :author "tionis.dev"
@@ -8,8 +8,8 @@
   :repo "git+https://tasadar.net/tionis/tools")
 
 (declare-source
-  :source ["tools"])
+  :source ["toolbox"])
 
 (declare-native
-  :name "tools/set"
+  :name "toolbox/set"
   :source ["src/set.c"])
