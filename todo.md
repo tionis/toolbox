@@ -1,21 +1,17 @@
 # Features maybe to add in the future
-- [ ] add graph handling (mainly for dags?)
-- [ ] add big integers (use code from https://github.com/andrewchambers/janet-big) and arbitrary precision floats
-- [ ] file watching (use inotify on unix-like but on windows?)
-- [ ] simple testing library based on deno's and maybe taking inspiration from other janet testing libs
-- [ ] file locking
-- [ ] add multi-method macros
-    something like this:
-    ```
-    (def- my-dispatch-table
-      @{'(:string :string :string) (fn [x y z] 1)
-           '(:string :string nil) (fn [x y z] 2)
-           ...})
-
-    (defn my-multimethod
-      [a b c]
-      ((in my-dispatch-table [(type a) (type b) (type c)]) a b c))
-    ```
-    (taken from https://github.com/janet-lang/janet/discussions/581#discussioncomment-279796)
+- [ ] fix uri
+- [ ] integrate [moneta](https://tasadar.net/tionis/moneta) under debts
+- [ ] move chronos into project (maybe call it date-time)
+- [ ] add tui
+  - [ ] amalgamate jermbox into this with conversion to cjanet?
+- [ ] add graph
+- [ ] add big/int + big/float (use code from https://github.com/andrewchambers/janet-big) and arbitrary precision floats
+- [ ] add big/watch (file watching (use inotify on unix-like but on windows?))
+- [ ] add flock
+- [ ] add ECS system
+- [ ] add generic data store (perhaps based on glyph's?)
+- [ ] add websocket support (maybe wrap around spork/http spork/httpf for own small framework?)
+- [ ] finish rpc
+- [ ] finish multi-method macro
 - [ ] add custom type handling based on https://github.com/MikeBeller/janet-abstract
       also consider [this discussion](https://github.com/janet-lang/janet/discussions/581#discussioncomment-285555)
