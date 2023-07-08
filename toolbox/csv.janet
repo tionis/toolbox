@@ -4,6 +4,24 @@
 # Permission is granted to use, copy, modify, and redistribute the work.
 # Full license information available in the project LICENSE file.
 
+#
+# CSV grammar based on RFC 4180 (http://www.ietf.org/rfc/rfc4180.txt)
+#
+# file        <- (header NL)? record (NL record)* NL?
+# header      <- name (COMMA name)*
+# record      <- field (COMMA field)*
+# name        <- field
+# field       <- escaped / non_escaped
+# escaped     <- DQUOTE (TEXTDATA / COMMA / CR / LF / D_DQUOTE)* DQUOTE
+# non_escaped <- TEXTDATA*
+# COMMA       <- ','
+# CR          <- '\r'
+# DQUOTE      <- '"'
+# LF          <- '\n'
+# NL          <- CR LF / CR / LF
+# TEXTDATA    <- !([",] / NL) .
+# D_DQUOTE    <- '"' '"'
+
 (def csv-lang
   (peg/compile
    '{:comma ","
