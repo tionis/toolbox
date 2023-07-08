@@ -1,4 +1,7 @@
-(import ../tools/xml)
+(import ../toolbox/xml)
+(use spork/test)
+
+(start-suite)
 (assert
   (deep=
     (peg/match
@@ -241,3 +244,4 @@
          "\n"]
        :tag "rss"
        :attrs @{"version" "2.0"}}]))
+(end-suite)

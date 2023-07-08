@@ -15,18 +15,13 @@
   :source ["src/set.c"])
 
 (declare-native
-  :name "gp/data/fuzzy"
+  :name "toolbox/fuzzy"
   :source @["cjanet/fuzzy.janet"])
 
 (declare-native
-  :name "gp/net/curi"
+  :name "toolbox/curi"
   :source @["cjanet/curi.janet"])
 
 (declare-native
-  :name "gp/codec"
+  :name "toolbox/codec"
   :source @["cjanet/codec.janet"])
-
-(declare-binscript
-  :main "bin/gpf"
-  :is-janet true
-  :auto-shebang true)
