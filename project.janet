@@ -25,3 +25,9 @@
 (declare-native
   :name "toolbox/codec"
   :source @["cjanet/codec.janet"])
+
+(declare-native
+  :name "toolbox/crypto"
+  :cflags [;default-cflags "-I."]
+  :source @["src/crypto.c"
+            "src/deps/libhydrogen/hydrogen.c"])
