@@ -1,4 +1,4 @@
-(import tools/set)
+(import toolbox/set)
 (use spork/test)
 
 (start-suite)

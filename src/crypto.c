@@ -22,7 +22,7 @@
 
 #include <janet.h>
 #include <stdlib.h>
-#include <deps/libhydrogen/hydrogen.h>
+#include <src/deps/libhydrogen/hydrogen.h>
 #include <math.h>
 
 /*********/
