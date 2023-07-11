@@ -81,7 +81,7 @@
 #    gen-delims    = ":" / "/" / "?" / "#" / "[" / "]" / "@"
 #    sub-delims    = "!" / "$" / "&" / "'" / "(" / ")"
 #                  / "*" / "+" / "," / ";" / "="
-(import gp/net/curi :prefix "" :export true)
+(import toolbox/curi :prefix "" :export true)
 
 (def- query-grammar
   (peg/compile
