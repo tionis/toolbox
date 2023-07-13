@@ -1,4 +1,7 @@
 # Features maybe to add in the future
+- [ ] add old shell-tools/shell/cli/*.janet executables
+- [ ] add old shell-tools/bin scripts
+- [ ] add man pages (import the one from shell-tools)
 - [ ] fix uri
 - [ ] integrate [moneta](https://tasadar.net/tionis/moneta) under debts
 - [ ] move chronos into project (maybe call it date-time)
