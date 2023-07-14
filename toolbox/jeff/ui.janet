@@ -1,4 +1,4 @@
-(import jermbox :as tb) # TODO replace with repo local version
+(import toolbox/jermbox :as tb)
 (import spork/sh)
 (import ./utf8)
 (use ./scorer)

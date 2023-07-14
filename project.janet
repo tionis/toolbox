@@ -1,8 +1,7 @@
 (declare-project
   :name "toolbox"
   :description "a collection of useful janet functions, libraries and more"
-  :dependencies ["https://github.com/janet-lang/spork.git"
-                 "https://tasadar.net/tionis/jeff"] # TODO inline this dep
+  :dependencies ["https://github.com/janet-lang/spork.git"]
   :author "tionis.dev"
   :license "MIT"
   :url "https://tasadar.net/tionis/tools"
@@ -41,6 +40,20 @@
 (declare-native
   :name "toolbox/ctrl-c/native"
   :source ["src/ctrl.c"])
+
+(declare-native
+  :name "toolbox/jermbox"
+  :cflags ["-std=c99"
+           "-Wall"
+           "-D_POSIX_C_SOURCE=200809L"
+           "-D_XOPEN_SOURCE"]
+  :source ["src/jermbox.c"
+           "src/deps/termbox_next/src/termbox.c"
+           "src/deps/termbox_next/src/utf8.c"
+           "src/deps/termbox_next/src/term.c"
+           "src/deps/termbox_next/src/ringbuffer.c"
+           "src/deps/termbox_next/src/input.c"
+           "src/deps/termbox_next/src/memstream.c"])
 
 (when (index-of (os/which) [:posix :linux :macos])
   # if creating executable use add :deps [(posix-spawn :static)] etc
