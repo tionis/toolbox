@@ -2,7 +2,6 @@
 
 (use ./ui)
 
-
 (def argparse-params
   ["Janet Fuzzy Finder - get through some stdout almost omnisciently 
 and friendly."

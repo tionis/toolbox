@@ -76,11 +76,13 @@
 (declare-executable
   :name "tb" # TODO install man pages for this or add better cli help
   :entry "toolbox/cli.janet"
+  :deps [(fuzzy :static)]
   :install true)
 
 (declare-executable
   :name "git-tb" # TODO install man pages for this or add better cli help
   :entry "toolbox/git-cli.janet"
+  :deps [(fuzzy :static)]
   :install true)
 
 (declare-executable
