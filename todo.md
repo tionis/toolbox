@@ -2,11 +2,8 @@
 - [ ] add old shell-tools/shell/cli/*.janet executables
 - [ ] add old shell-tools/bin scripts
 - [ ] add man pages (import the one from shell-tools)
-- [ ] fix uri
-- [ ] integrate [moneta](https://tasadar.net/tionis/moneta) under debts
 - [ ] move chronos into project (maybe call it date-time)
-- [ ] add tui
-  - [ ] amalgamate jermbox into this with conversion to cjanet?
+- [ ] add tui abstraction
 - [ ] add graph
 - [ ] add big/int + big/float (use code from https://github.com/andrewchambers/janet-big) and arbitrary precision floats
 - [ ] add big/watch (file watching (use inotify on unix-like but on windows?))

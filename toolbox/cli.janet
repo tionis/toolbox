@@ -2,6 +2,7 @@
 (import spork/rawterm)
 (import spork/randgen)
 (import spork/sh)
+(import spork/temple)
 (import ./jeff/init :as jeff)
 (import ./shell/defaults)
 (use ./shell/cli)
@@ -20,6 +21,31 @@
   (def exit_code (os/execute args :pe env))
   (ev/close (streams 1))
   (if (not (= exit_code 0)) (prin (ev/read (streams 0) :all))))
+
+(def simple-html-template
+  (temple/compile
+    `<!DOCTYPE html>
+    <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>{{ (or (args "title") "INSERT_TITLE_HERE") }}</title>
+        <link rel="stylesheet" href="https://tionis.dev/water.css">
+      </head>
+      <body>
+        <h1>{{ (or (args "title") "INSERT_TITLE_HERE") }}</h1>
+      </body>
+    </html>`))
+
+(defc web/html/new
+  `simple html template, file defaults to index.html`
+  {:options @{"title" {:kind :option
+                       :default "INSERT_TITLE_HERE"
+                       :help "the title of the html template"}}}
+  [args &opt file]
+  (default file "index.html")
+  (spit file (simple-html-template ;(mapcat identity (kvs args)))))
 
 (defc fzf/edit
   "select file to edit via fzf"
