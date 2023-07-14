@@ -1,4 +1,4 @@
-(import shell/posix_spawn/native :as _posix-spawn)
+(import toolbox/posix_spawn/native :as _posix-spawn)
 
 (def POSIX_SPAWN_SETSIGMASK _posix-spawn/POSIX_SPAWN_SETSIGMASK)
 (def POSIX_SPAWN_SETSIGDEF _posix-spawn/POSIX_SPAWN_SETSIGDEF)

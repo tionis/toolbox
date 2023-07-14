@@ -15,18 +15,14 @@
   (declare-manpage # Install man pages # TODO auto generate from module if not existant?
     (string "man/" f)))
 
-(declare-executable
-  :name "tb" # TODO install man pages for this or add better cli help
-  :entry "toolbox/cli.janet"
-  :install true)
-
 (declare-native
   :name "toolbox/set"
   :source ["src/set.c"])
 
-(declare-native
-  :name "toolbox/fuzzy"
-  :source @["cjanet/fuzzy.janet"])
+(def fuzzy
+  (declare-native
+    :name "toolbox/fuzzy"
+    :source @["cjanet/fuzzy.janet"]))
 
 (declare-native
   :name "toolbox/curi"
@@ -43,7 +39,7 @@
             "src/deps/libhydrogen/hydrogen.c"])
 
 (declare-native
-  :name "shell/ctrl-c/native"
+  :name "toolbox/ctrl-c/native"
   :source ["src/ctrl.c"])
 
 (when (index-of (os/which) [:posix :linux :macos])
@@ -51,15 +47,31 @@
   # to declare-executable to handle compile steps correctly
   (def posix-spawn
     (declare-native
-      :name "shell/posix_spawn/native"
+      :name "toolbox/posix_spawn/native"
       :source ["src/posix-spawn.c"]))
   (declare-source
-    :prefix "shell"
+    :prefix "toolbox"
     :source ["src/posix-spawn.janet"])
   (def sh
     (declare-native
-      :name "shell/sh/native"
+      :name "toolbox/sh/native"
       :source ["src/sh.c"]))
   (declare-source
-    :prefix "shell"
+    :prefix "toolbox"
     :source ["src/sh.janet"]))
+
+(declare-executable
+  :name "tb" # TODO install man pages for this or add better cli help
+  :entry "toolbox/cli.janet"
+  :install true)
+
+(declare-executable
+  :name "git-tb" # TODO install man pages for this or add better cli help
+  :entry "toolbox/git-cli.janet"
+  :install true)
+
+(declare-executable
+  :name "jeff"
+  :entry "toolbox/jeff/cli.janet"
+  :deps [(fuzzy :static)]
+  :install true)

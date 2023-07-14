@@ -7,6 +7,9 @@
 (import ./path :export true)
 (import ./color :export true)
 
+(import spork/rawterm)
+(defn os/isatty [] (rawterm/isatty)) # TODO hotfix - remove later
+
 (defn pp
   "pretty print with colors is os/isatty truthy"
   [x]

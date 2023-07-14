@@ -2,6 +2,8 @@
 (import spork/rawterm)
 (import spork/randgen)
 (import spork/sh)
+(import ./jeff/init :as jeff)
+(import ./shell/defaults)
 (use ./shell/cli)
 (description "collection of shell utils")
 
@@ -18,6 +20,11 @@
   (def exit_code (os/execute args :pe env))
   (ev/close (streams 1))
   (if (not (= exit_code 0)) (prin (ev/read (streams 0) :all))))
+
+(defc fzf/edit
+  "select file to edit via fzf"
+  []
+  (os/execute [(defaults/editor) (jeff/choose (sh/list-all-files ".") :use-fzf true)] :px))
 
 (defc fzf/preview
   {:cli/alias ["fzf:preview"]}

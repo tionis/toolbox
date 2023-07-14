@@ -1,5 +1,5 @@
 (import ./posix-spawn)
-(import shell/sh/native :prefix "" :export true)
+(import toolbox/sh/native :prefix "" :export true)
 
 (defn run*
   ``

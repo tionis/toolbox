@@ -4,6 +4,9 @@
 (def cli/funcs @{})
 (var cli/description nil)
 
+(import spork/rawterm)
+(defn os/isatty [] (rawterm/isatty)) # TODO hotfix - remove later
+
 (defn log [x & rest]
   (def to-print
     (if (> (length rest) 0)
