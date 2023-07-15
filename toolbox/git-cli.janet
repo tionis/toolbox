@@ -25,6 +25,12 @@
        (map |(slice $0 2))))
 
 (defc select-dir
+  "select a directory in the repo"
   {:cli/func |(print (($0 :func)))}
   []
   (jeff/choose (distinct (map |(path/dirname $0) (string/split "\n" (sh/exec-slurp "git" "ls-files"))))))
+
+(defc graph
+  "show commit graph using git log"
+  []
+  (os/execute ["git" "log" "--all" "--graph" "--decorate" "--oneline" "--simplify-by-decoration"] :px))
