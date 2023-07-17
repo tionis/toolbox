@@ -86,7 +86,7 @@
   :install true)
 
 (declare-executable
-  :name "jeff"
+  :name "tb-fuzzy"
   :entry "toolbox/jeff/cli.janet"
   :deps [(fuzzy :static)]
   :install true)
