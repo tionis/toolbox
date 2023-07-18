@@ -2,10 +2,8 @@
 (import spork/path)
 (use ./color)
 (def cli/funcs @{})
+(var cli/commands nil)
 (var cli/description nil)
-
-(import spork/rawterm)
-(defn os/isatty [] (rawterm/isatty)) # TODO hotfix - remove later
 
 (defn log [x & rest]
   (def to-print
@@ -172,35 +170,11 @@
   (put keyed-args :order nil)
   ((x :func) ;pos-args ;(mapcat identity (pairs keyed-args))))
 
-# TODO missing features:
-# handle functions with named arguments by auto-generating argparse
-# allow adding type information to functions via argument metadata
-# use the same metadata to also define descriptions and maybe other
-# data about the arguments (this approach might also be used for 
-# multimethods in janet-tools)
-(defn commands
-  `Simple cli wrapper for subcommand based scripts that allows defining functions to use as subcommands.
-  If no funcs are given as input alls funcs of the current environment that have the :cli metadata set to true are used.
-  by using the functions name as command name and docstring as help message.
-  Following function metadata keys can also be added:
-   :cli/name - to override the name of the subcommand
-   :cli/alias - a list of aliases for the subcommand
-   :cli/doc - override docstring for cli help
-   :cli/print - print output of function in jdn
-   :cli/func - a function that is called instead of the real func
-               is passed a single struct as input with:
-                :args for the input-args
-                :argparse - the output of argparse if :options was used
-                :func - the original function
-   :argparse - if defined it is used as a input map for spork/argparse to parse input args
-              the result of this parsing is added as first argument when invoking the function
-   TODO: will add some automatic or definable argument type conversion and handling of named arguments etc. 
-  Spcifying a description via the :desc named argument or the description macro is recommended`
-  [&named args desc funcs env]
-  (default args (dyn *args*))
+(defn generate-commands
+  [&named desc funcs env]
   (default desc (or cli/description
                    (dyn :description)
-                   (path/basename (first args))))
+                   "to be named"))
   (default funcs
     (if (= (length cli/funcs) 0)
       (get-cli-funcs)
@@ -266,7 +240,36 @@
             (raw-func ;args)))))
     (put commands name {:help help :func func :alias aliases})
     (each al aliases (put commands (keyword al) (alias name))))
+  commands)
 
+
+# TODO missing features:
+# handle functions with named arguments by auto-generating argparse
+# allow adding type information to functions via argument metadata
+# use the same metadata to also define descriptions and maybe other
+# data about the arguments (this approach might also be used for 
+# multimethods in janet-tools)
+(defn commands
+  `Simple cli wrapper for subcommand based scripts that allows defining functions to use as subcommands.
+  If no funcs are given as input alls funcs of the current environment that have the :cli metadata set to true are used.
+  by using the functions name as command name and docstring as help message.
+  Following function metadata keys can also be added:
+   :cli/name - to override the name of the subcommand
+   :cli/alias - a list of aliases for the subcommand
+   :cli/doc - override docstring for cli help
+   :cli/print - print output of function in jdn
+   :cli/func - a function that is called instead of the real func
+               is passed a single struct as input with:
+                :args for the input-args
+                :argparse - the output of argparse if :options was used
+                :func - the original function
+   :argparse - if defined it is used as a input map for spork/argparse to parse input args
+              the result of this parsing is added as first argument when invoking the function
+   TODO: will add some automatic or definable argument type conversion and handling of named arguments etc. 
+  Spcifying a description via the :desc named argument or the description macro is recommended`
+  [&named args desc funcs env commands]
+  (default args (dyn *args*))
+  (default commands (or cli/commands (generate-commands :desc desc :funcs funcs :env env)))
   (def name (keyword (path/basename (get args 0 ""))))
   (if (commands name)
     ((get-in commands [name :func]) commands ;(slice args 1 -1))
@@ -280,6 +283,13 @@
   [desc]
   (setdyn :description desc)
   (set cli/description desc))
+
+(defn init-main
+  `initialize main function - this is not required
+  but if added at the end of executables this will prerender
+  the commands table`
+  []
+  (set cli/commands (generate-commands)))
 
 (defn main
   `main func to be used with (use shell/cli)`

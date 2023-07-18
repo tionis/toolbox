@@ -12,6 +12,11 @@
   (if (not (dyn :rng)) (setdyn :rng (math/rng (os/cryptorand 8))))
   (+ 1 (math/rng-int (dyn :rng) y)))
 
+(defc core/nproc
+  "print the number of processing units available"
+  []
+  (print (os/cpu-count)))
+
 (defc core/fold
   {:cli/func argparse-keyed
    :cli/argparse {"spaces" {:kind :option
@@ -129,3 +134,5 @@
 
   (if img?
     (os/execute ["ctpvquit" id] :p)))
+
+(init-main)

@@ -1,6 +1,3 @@
-(import spork/rawterm)
-(defn os/isatty [] (rawterm/isatty)) # TODO hotfix - remove later
-
 (def- colors
   {:black  30
    :red    31
