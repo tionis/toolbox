@@ -40,6 +40,9 @@
 (declare-native
   :name "toolbox/ctrl-c/native"
   :source ["src/ctrl.c"])
+(declare-source
+  :prefix "toolbox"
+  :source ["src/ctrl-c.janet"])
 
 (declare-native
   :name "toolbox/jermbox"
