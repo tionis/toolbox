@@ -38,7 +38,11 @@
   packet)
 
 (defn dial [address]
-  (net/connect ;(string/split ":" address) :stream))
+  (def index (string/find ":" (string/reverse address)))
+  (net/connect
+    (slice address 0 (- (length address) 1 index))
+    (slice address (- (length address) index))
+    :stream))
 
 (defn execute [connection command]
   (def packet (new-packet (packet-types :exec-command) command))
