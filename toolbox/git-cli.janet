@@ -5,6 +5,30 @@
 (import spork/sh)
 (description "collection of git utils")
 
+(defc lfs/util/get-pattern-by-file-size
+  `get a list of patterns that are match all the file extensions that have files over size
+  size defaults to 1000000 (1MB)`
+  {:cli/func |(each pattern (if (first ($1 :args))
+                              (($0 :func) (scan-number (first ($1 :args))))
+                              (($0 :func)))
+                (print pattern))}
+  [&opt size]
+  (default size 1000000)
+  (->>
+    (do (def ret @[])
+        (sh/scan-directory "." (fn [x]
+                                 (if (not (peg/match ~(* ".git" (any 1) -1) x))
+                                     (let [stat (os/stat x)]
+                                          (if (> (stat :size) size)
+                                              (array/push ret x))))))
+        ret)
+    (map (fn [x]
+           (when x
+             (if-let [rev (string/reverse x)
+                      dot (string/find "." rev)]
+               (string "*" (string/reverse (string/slice rev 0 (inc dot)))) x))))
+    distinct))
+
 (defc lock
   "lock a file to ignore changes done to it"
   [filename]
