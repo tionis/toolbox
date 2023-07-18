@@ -12,6 +12,34 @@
   (if (not (dyn :rng)) (setdyn :rng (math/rng (os/cryptorand 8))))
   (+ 1 (math/rng-int (dyn :rng) y)))
 
+(defc core/fold
+  {:cli/func argparse-keyed
+   :cli/argparse {"spaces" {:kind :option
+                            :short "s"
+                            :help "break at spaces"}
+                  "width" {:kind :flag
+                           :short "w"
+                           :map |(scan-number $0)
+                           :default 80
+                           :help "use WIDTH columns"}
+                  "bytes" {:kind :option
+                           :short "b"
+                           :help "count bytes rather than columns"}
+                  :default {:kind :accumulate}}}
+  `Wrap input lines in each $file, writing to standard output.
+  With no file, or when file is -, read standard input.
+  Width defaults to 80, if bytes thruthy count bytes instead of terminal columns
+  If spaces truthy, split at spaces`
+  [file &named width spaces bytes]
+  (default width 80)
+  (def text
+    (if (and file (not= file "-"))
+      (slurp file)
+      (string/trimr (file/read stdin :all))))
+  # find next cut point considering bytes and width
+  # if spaces is given look at index if space, split at index+1 else walk backwards to find previous space and split there (handle special case of not finding one/walking back into already printed subarr)
+  )
+
 (defc more/chronic
   "runs a command quietly unless it fails"
   [& args]

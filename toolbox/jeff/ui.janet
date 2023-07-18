@@ -1,4 +1,4 @@
-(import toolbox/jermbox :as tb)
+(import /build/toolbox/jermbox :as tb)
 (import spork/sh)
 (import ./utf8)
 (use ./scorer)
