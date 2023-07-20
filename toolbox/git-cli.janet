@@ -1,9 +1,16 @@
 #!/bin/env janet
 (import ./jeff)
+(import ./git)
 (use ./shell/cli)
 (import spork/path)
 (import spork/sh)
 (description "collection of git utils")
+
+(defc branch/recently-checked-out
+  "list recently checked out branches"
+  []
+  (each item (git/branch/recently-checked-out)
+    (printf "%s\t%s" (item :timestamp) (item :branch))))
 
 (defc lfs/util/get-pattern-by-file-size
   `get a list of patterns that are match all the file extensions that have files over size
