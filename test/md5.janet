@@ -1,0 +1,10 @@
+(import ../toolbox/hash/md5 :as md5)
+
+(assert (= (md5/digest "")
+           "d41d8cd98f00b204e9800998ecf8427e"))
+(assert (= (md5/digest "The quick brown fox jumps over the lazy dog")
+           "9e107d9d372bb6826bd81d3542a419d6"))
+(assert (= (md5/digest "The quick brown fox jumps over the lazy dog.")
+           "e4d909c290d0fb1ca068ffaddf22cbd0"))
+(assert (= (md5/digest "hello")
+           "5d41402abc4b2a76b9719d911017c592"))
