@@ -3,10 +3,16 @@
 (import spork/randgen)
 (import spork/sh)
 (import spork/temple)
+(import ./http)
 (import ./jeff/init :as jeff)
 (import ./shell/defaults)
 (use ./shell/cli)
 (description "collection of shell utils")
+
+(defc net/ip/external/info
+  :cli/print
+  []
+  (http/get/json "https://am.i.mullvad.net/json"))
 
 (defn roll-one-y-sided-die [y]
   (if (not (dyn :rng)) (setdyn :rng (math/rng (os/cryptorand 8))))
