@@ -14,35 +14,41 @@
   (declare-manpage # Install man pages # TODO auto generate from module if not existant?
     (string "man/" f)))
 
-(declare-native
-  :name "toolbox/set"
-  :source ["src/set.c"])
+(def toolbox/set
+  (declare-native
+    :name "toolbox/set"
+    :source ["src/set.c"]))
 
 (def fuzzy
   (declare-native
     :name "toolbox/fuzzy"
     :source @["cjanet/fuzzy.janet"]))
 
-(declare-native
-  :name "toolbox/curi"
-  :source @["cjanet/curi.janet"])
+(def curi
+  (declare-native
+    :name "toolbox/curi"
+    :source @["cjanet/curi.janet"]))
 
-(declare-native
-  :name "toolbox/codec"
-  :source @["cjanet/codec.janet"])
+(def codec
+  (declare-native
+    :name "toolbox/codec"
+    :source @["cjanet/codec.janet"]))
 
-(declare-native
-  :name "toolbox/crypto"
-  :cflags [;default-cflags "-I."]
-  :source @["src/crypto.c"
-            "src/deps/libhydrogen/hydrogen.c"])
+(def crypto
+  (declare-native
+    :name "toolbox/crypto"
+    :cflags [;default-cflags "-I."]
+    :source @["src/crypto.c"
+              "src/deps/libhydrogen/hydrogen.c"]))
 
-(declare-native
-  :name "toolbox/ctrl-c/native"
-  :source ["src/ctrl.c"])
-(declare-source
-  :prefix "toolbox"
-  :source ["src/ctrl-c.janet"])
+(def ctrl-c/native
+  (declare-native
+    :name "toolbox/ctrl-c/native"
+    :source ["src/ctrl.c"]))
+(def ctrl-c
+  (declare-source
+    :prefix "toolbox"
+    :source ["src/ctrl-c.janet"]))
 
 (def jermbox
   (declare-native
@@ -87,11 +93,14 @@
 (declare-executable
   :name "git-tb" # TODO install man pages for this or add better cli help
   :entry "toolbox/git-cli.janet"
-  :deps [(fuzzy :static)]
+  :deps [(fuzzy :static)
+         (jermbox :static)
+         (toolbox/set :static)]
   :install true)
 
 (declare-executable
   :name "tb-fuzzy"
   :entry "toolbox/jeff/cli.janet"
-  :deps [(fuzzy :static)]
+  :deps [(fuzzy :static)
+         (jermbox :static)]
   :install true)
