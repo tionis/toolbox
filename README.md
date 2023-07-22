@@ -2,7 +2,7 @@
 ## Description
 This is a collection of useful programming tools mainly written in and for [janet](https://github.com/janet-lang/janet), managed using its package manager [jpm](https://github.com/janet-lang/jpm).  
 It contains a few useful functions, libraries and utilities that I use for personal computing in the shell, in small competitive programming tasks and some more.  
-This project should only depend on a working janet installation with an C99 compiler and jpm set up. As well as a git + git-lfs install.  
+This project should only depend on a working janet installation with an C99 compiler and jpm setup (including git+curl).
 
 ## State
 Large parts of the repo are still a work in progress and are highly unstable, if anyone wants to rely on some code of mine please open a [github issue](https://github.com/tionis/toolbox) and I will extract the code into a more stable sublibrary in it's own repo. (You can also always contact some other way, my contact details are over at [tionis.dev](https://tionis.dev))
