@@ -44,19 +44,20 @@
   :prefix "toolbox"
   :source ["src/ctrl-c.janet"])
 
-(declare-native
-  :name "toolbox/jermbox"
-  :cflags ["-std=c99"
-           "-Wall"
-           "-D_POSIX_C_SOURCE=200809L"
-           "-D_XOPEN_SOURCE"]
-  :source ["src/jermbox.c"
-           "src/deps/termbox_next/src/termbox.c"
-           "src/deps/termbox_next/src/utf8.c"
-           "src/deps/termbox_next/src/term.c"
-           "src/deps/termbox_next/src/ringbuffer.c"
-           "src/deps/termbox_next/src/input.c"
-           "src/deps/termbox_next/src/memstream.c"])
+(def jermbox
+  (declare-native
+    :name "toolbox/jermbox"
+    :cflags ["-std=c99"
+             "-Wall"
+             "-D_POSIX_C_SOURCE=200809L"
+             "-D_XOPEN_SOURCE"]
+    :source ["src/jermbox.c"
+             "src/deps/termbox_next/src/termbox.c"
+             "src/deps/termbox_next/src/utf8.c"
+             "src/deps/termbox_next/src/term.c"
+             "src/deps/termbox_next/src/ringbuffer.c"
+             "src/deps/termbox_next/src/input.c"
+             "src/deps/termbox_next/src/memstream.c"]))
 
 (when (index-of (os/which) [:posix :linux :macos])
   # if creating executable use add :deps [(posix-spawn :static)] etc
@@ -79,7 +80,8 @@
 (declare-executable
   :name "tb" # TODO install man pages for this or add better cli help
   :entry "toolbox/cli.janet"
-  :deps [(fuzzy :static)]
+  :deps [(fuzzy :static)
+         (jermbox :static)]
   :install true)
 
 (declare-executable
