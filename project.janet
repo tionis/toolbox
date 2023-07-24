@@ -1,7 +1,8 @@
 (declare-project
   :name "toolbox"
   :description "a collection of useful janet functions, libraries and more"
-  :dependencies ["https://github.com/janet-lang/spork.git"]
+  :dependencies ["https://github.com/janet-lang/spork.git"
+                 "https://github.com/janet-lang/sqlite3"]
   :author "tionis.dev"
   :license "MIT"
   :url "https://tasadar.net/tionis/tools"
