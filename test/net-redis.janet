@@ -1,0 +1,28 @@
+(import ../toolbox/net/redis/parser :as redis)
+(use spork/test)
+
+(start-suite)
+(assert (deep= @"*2\r\n$5\r\nhello\r\n$5\r\nworld\r\n" (redis/encode ["hello" "world"])))
+
+(assert (= (redis/peg-decode "+OK\r\n") "OK"))
+(assert-error "error-1" (redis/peg-decode "-Error message\r\n"))
+(assert-error "error-2" (redis/peg-decode "-ERR unknown command 'helloworld'\r\n"))
+(assert-error "error-3" (redis/peg-decode "-WRONGTYPE Operation against a key holding the wrong kind of value\r\n"))
+(assert (= (redis/peg-decode "+test\r\n") "test"))
+(assert (= (redis/peg-decode "$5\r\nhello\r\n") "hello"))
+(redis/peg-decode "*2\r\n$5\r\nhello\r\n$5\r\nworld\r\n")
+(assert (= (redis/peg-decode "$0\r\n\r\n") ""))
+(assert (= (redis/peg-decode "$-1\r\n") nil))
+
+(def [conn server] (os/pipe))
+(ev/write server "+OK\r\n")
+(assert (deep= (redis/decode conn) @"OK"))
+(:close conn)
+(:close server)
+
+(def [conn server] (os/pipe))
+(ev/write server "*2\r\n$5\r\nhello\r\n$5\r\nworld\r\n")
+(assert (deep= @[@"hello" @"world"] (redis/decode conn)))
+(:close conn)
+(:close server)
+(end-suite)
