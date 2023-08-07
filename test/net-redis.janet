@@ -13,6 +13,19 @@
 (redis/peg-decode "*2\r\n$5\r\nhello\r\n$5\r\nworld\r\n")
 (assert (= (redis/peg-decode "$0\r\n\r\n") ""))
 (assert (= (redis/peg-decode "$-1\r\n") nil))
+#(assert (deep=
+#          (redis/peg-decode "*3\r\n$5\r\nhello\r\n$-1\r\n$5\r\nworld\r\n")
+#          ["hello" nil "world"]))
+
+(assert (deep= (redis/encode ["LLEN" "mylist"])
+        @"*2\r\n$4\r\nLLEN\r\n$6\r\nmylist\r\n"))
+
+(def [conn server] (os/pipe))
+(ev/write server "*3\r\n$5\r\nhello\r\n$-1\r\n$5\r\nworld\r\n")
+(assert (= (freeze (redis/decode conn))
+           ["hello" nil "world"]))
+(:close conn)
+(:close server)
 
 (def [conn server] (os/pipe))
 (ev/write server "+OK\r\n")

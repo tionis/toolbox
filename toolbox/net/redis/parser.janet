@@ -38,28 +38,28 @@
   `read from conn until encountering end
   returns a buffer with captured content excluding end
   (end is read from conn though)`
-  [conn end]
+  [conn end &opt timeout]
   (def out @"")
   (while (not (buf-ends-in out end))
-    (:read conn 1 out))
+    (:read conn 1 out timeout))
   (buffer/popn out (length end)))
 
 (defn decode
   `decode one RESP message on conn by calling :read on conn until a valid message is constructed
   RESP errors are thrown as is`
-  [conn]
-  (def typ (:read conn 1))
+  [conn &opt timeout]
+  (def typ (:read conn 1 @"" timeout))
   (case (first typ)
-    (chr "$") (let [len (scan-number (read-to conn "\r\n"))]
+    (chr "$") (let [len (scan-number (read-to conn "\r\n" timeout))]
                 (if (= len -1)
                   nil
-                  (let [out (:read conn len)]
-                    (:read conn 2)
+                  (let [out (:read conn len @"" timeout)]
+                    (:read conn 2 @"" timeout)
                     out)))
-    (chr "+") (read-to conn "\r\n")
-    (chr ":") (scan-number (read-to conn "\r\n"))
-    (chr "-") (error (read-to conn "\r\n"))
-    (chr "*") (seq [i :range [0 (scan-number (read-to conn "\r\n"))]]
+    (chr "+") (read-to conn "\r\n" timeout)
+    (chr ":") (scan-number (read-to conn "\r\n" timeout))
+    (chr "-") (error (read-to conn "\r\n" timeout))
+    (chr "*") (seq [i :range [0 (scan-number (read-to conn "\r\n" timeout))]]
                 (decode conn))
     (error (string/format "unknown type: %j" typ))))
 
