@@ -1,4 +1,3 @@
-(import toolbox/set)
 (import spork/sh)
 (import spork/path)
 (import ./util)
@@ -14,7 +13,7 @@
   chronological order. Uses git-reflog and excludes branches that have since been deleted.`
   [&opt dir]
   (default dir (os/cwd))
-  (def seen (set/new))
+  (def seen @{})
   (def full-reflog
     (->> (sh/exec-slurp "git" "-C" dir "reflog" "-n100" "--pretty=%cr|%gs" "--grep-reflog=checkout: moving" "HEAD")
          (string/split "\n")

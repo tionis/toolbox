@@ -15,11 +15,6 @@
   (declare-manpage # Install man pages # TODO auto generate from module if not existant?
     (string "man/" f)))
 
-(def toolbox/set
-  (declare-native
-    :name "toolbox/set"
-    :source ["src/set.c"]))
-
 (def fuzzy
   (declare-native
     :name "toolbox/fuzzy"
@@ -95,8 +90,7 @@
   :name "git-tb" # TODO install man pages for this or add better cli help
   :entry "toolbox/git-cli.janet"
   :deps [(fuzzy :static)
-         (jermbox :static)
-         (toolbox/set :static)]
+         (jermbox :static)]
   :install true)
 
 (declare-executable
@@ -105,3 +99,6 @@
   :deps [(fuzzy :static)
          (jermbox :static)]
   :install true)
+
+(post-deps
+  (print 1))
