@@ -48,6 +48,7 @@
 # C generation
 (include <janet.h>)
 (include <ctype.h>)
+(include <math.h>)
 
 (@ define SCORE_MAX INFINITY)
 (@ define SCORE_MIN -INFINITY)
