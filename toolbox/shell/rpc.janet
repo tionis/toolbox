@@ -50,7 +50,7 @@
                 (unless f (error "unknown function"))
                 (send [(actions/encode :call-reponse) (f ;args)]))
         :call-response (error "not a client")
-      ([err] (send [(action/encode :error) err])))))
+      ([err] (send [(action/encode :error) err]))))))
 
 (defn client
   `executes args via (os/spawn) and used stdin/stdout streams
