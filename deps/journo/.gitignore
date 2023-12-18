@@ -1,0 +1,6 @@
+.clj-kondo
+.lsp
+.vscode
+build
+scratch.janet
+test/junk/*

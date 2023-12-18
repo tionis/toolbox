@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/ingydotnet/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/CFiggers/journo
+	branch = main
+	commit = 1465b028888ff256fe45c6404c0b1b826451115f
+	parent = 480fc80efc357ea83612dd66b21f4f692f61d399
+	method = merge
+	cmdver = 0.4.6
