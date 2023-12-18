@@ -1,4 +1,8 @@
 # Features maybe to add in the future
+- [ ] integrate some external libraries
+    - [ ] https://github.com/ianthehenry/banquet
+    - [ ] https://github.com/CFiggers/journo
+    - [ ] https://github.com/ianthehenry/heap
 - [ ] add old shell-tools/shell/cli/*.janet executables
 - [ ] add old shell-tools/bin scripts
 - [ ] add man pages (import the one from shell-tools)
