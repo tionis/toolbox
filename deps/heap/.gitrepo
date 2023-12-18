@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/ingydotnet/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/ianthehenry/heap
+	branch = master
+	commit = ff5e69ded337c0ecd0f16492ec987dc8e120d295
+	parent = 7e4c23090f38c2f4c67146aa04e2324ad9f3c956
+	method = merge
+	cmdver = 0.4.6
