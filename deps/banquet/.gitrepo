@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/ingydotnet/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/ianthehenry/banquet
+	branch = master
+	commit = 9aaa7aa46879164eb0d521fd9047ba72666d0e33
+	parent = d95c7ba0da16561a182bb1f56b29587fec85770b
+	method = merge
+	cmdver = 0.4.6
