@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/ingydotnet/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/ianthehenry/bytemap
+	branch = master
+	commit = d25a36d941ef7fb4f2b475696637d6cb8a2204a4
+	parent = 9791f2409ba5f9bd0d1e4b4c2fbbe54641d70937
+	method = merge
+	cmdver = 0.4.6
