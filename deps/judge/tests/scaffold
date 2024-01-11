@@ -1,0 +1,79 @@
+set -uo pipefail
+DEFAULT_FILE=script.janet
+root=$(dirname $TESTDIR)
+HERE=$PWD
+
+if [[ ! -e jpm_tree/ ]]; then
+  rsync -a "$root/jpm_tree/" jpm_tree/
+  TREE=$(pwd)/jpm_tree
+  (cd "$root"; jpm --tree=$TREE install >/dev/null 2>/dev/null)
+fi
+
+relative_path_to=$(
+  janet -E '(print (string
+    (string/join (->>
+      (string/split "/" $0)
+      (drop 1)
+      (map (fn [_] "..")))
+      "/")
+     $1))' \
+     "$(pwd)" "$root"
+)
+
+use() {
+ local file
+ # there must be a better way to do this
+ file=${1:-$DEFAULT_FILE}
+ cat > "$file"
+}
+
+run() {
+  local file
+  if [[ $# > 0 ]]; then
+    file=$1
+    shift
+  else
+    file=$DEFAULT_FILE
+  fi
+
+  if [[ ! -e "$file" ]]; then
+    echo "must call use before run"
+    exit 1
+  fi
+  # cram doesn't differentiate stderr and stdout, but
+  # it's important to test
+  janet -m "jpm_tree/lib" -l judge "$file" "$@" 3>&1 1>&2 2>&3 3>&- \
+    | sed -e 's/^/! /' \
+    | sed -E -e 's/\x1b\[31m/<red>/g' \
+    | sed -E -e 's/\x1b\[32m/<grn>/g' \
+    | sed -E -e 's/\x1b\[2m/<dim>/g' \
+    | sed -E -e 's|\x1b\[0m|</>|g' \
+    | sed -E -e "s|$root|\$root|g" #\
+    #| sed -E -e 's/on line [0-9]+, column [0-9]+/on line LINE, column COL/g'
+}
+
+sanitize() {
+  expand \
+  | sed -E -e 's/\x1b\[31m/<red>/g' \
+  | sed -E -e 's/\x1b\[32m/<grn>/g' \
+  | sed -E -e 's/\x1b\[2m/<dim>/g' \
+  | sed -E -e 's|\x1b\[0m|</>|g' \
+  | sed -E -e "s|$PWD|\$PWD|g" \
+  | sed -E -e '/<anonymous>|_thunk/!s/on line [0-9]+, column [0-9]+/on line LINE, column COL/g'
+}
+
+judge() {
+  ($HERE/jpm_tree/bin/judge "$@" 3>&1 1>&2 2>&3 3>&- \
+    | sed -e 's/^/! /') 2>&1 \
+  | sanitize
+}
+
+run_err() {
+  run "$@" | head -n1
+}
+
+show_tested() {
+  local file
+  file=${1:-$DEFAULT_FILE}
+  cat "$file.tested"
+}
