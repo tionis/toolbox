@@ -4,6 +4,13 @@
 (def cli/funcs @{})
 (var cli/commands nil)
 (var cli/description nil)
+# TODO rework argparse handling
+# (auto generate argparse from keyed funcs + metadata) e.g.:
+# (defc some-func
+#   some help message for the func in general
+#   {:args {:req_test {:required true :help "required value help" :type :number}
+#           :opt_test {:help "optional"}}}
+#  [pos_arg1 pos_arg2 &named req_test opt_test])
 
 (defn log [x & rest]
   (def to-print
@@ -80,22 +87,35 @@
           binding meta))
 
 (defn- docstring->cli-help [docstring alias has-argparse]
-  (def start (if has-argparse 2 1)) # TODO replace with proper PEG grammar
-  (def lines (string/split "\n" docstring)) # TODO handle empty docstring better (currently has empty line)
-  (def out @[])
-  (array/push out
-    (string/join
-      (map |(string/format "%j" $0)
-           (slice (parse (first lines)) start -1))
-      " "))
-  (def rest @[])
-  (when (and (> (length lines) 2)
-             (not= (lines 2) ""))
-    (each line (slice lines 2 -1)
-      (array/push out line)))
-  (if (> (length alias) 0)
-    (array/push out (string "aliases: [" (string/join alias ", ") "]")))
-  (string/join out "\n"))
+  (if has-argparse
+    (do
+      # TODO has-argparse bool does not account for :default mapping
+      (def start (if has-argparse 2 1)) # TODO replace with proper PEG grammar
+      (def lines (string/split "\n" docstring)) # TODO handle empty docstring better (currently has empty line)
+      (def out @[])
+      (when (and (> (length lines) 2)
+                 (not= (lines 2) ""))
+        (each line (slice lines 2 -1)
+          (array/push out line)))
+      (if (> (length alias) 0)
+        (array/push out (string "aliases: [" (string/join alias ", ") "]")))
+      (string/join out "\n"))
+    (do
+      (def start (if has-argparse 2 1)) # TODO replace with proper PEG grammar
+      (def lines (string/split "\n" docstring)) # TODO handle empty docstring better (currently has empty line)
+      (def out @[])
+      (array/push out
+        (string/join
+          (map |(string/format "%j" $0)
+               (slice (parse (first lines)) start -1))
+          " "))
+      (when (and (> (length lines) 2)
+                 (not= (lines 2) ""))
+        (each line (slice lines 2 -1)
+          (array/push out line)))
+      (if (> (length alias) 0)
+        (array/push out (string "aliases: [" (string/join alias ", ") "]")))
+      (string/join out "\n"))))
 
 (defn- get-func-help
   [name command &opt indent]
