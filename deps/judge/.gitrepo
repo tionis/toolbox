@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/ingydotnet/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/ianthehenry/judge
+	branch = master
+	commit = a9db4af561f2bdcdc8dada35db7d8e8453262318
+	parent = 9327a5fbda576aa9dadf816db54575d33af84033
+	method = merge
+	cmdver = 0.4.6

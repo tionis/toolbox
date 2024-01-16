@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/ingydotnet/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/ianthehenry/macaroni
+	branch = master
+	commit = 636a00634c6a9b854545c8dd90535c7ac8db3558
+	parent = 143b3e845388daae0deb345a67fcb26213782cfd
+	method = merge
+	cmdver = 0.4.6

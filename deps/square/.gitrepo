@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/ingydotnet/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/ianthehenry/square
+	branch = master
+	commit = 983d259cb7585d00268838cc66370c18e83ab4cd
+	parent = 3470cfc0a89f44ce412bbc0d0e507c56548149c5
+	method = merge
+	cmdver = 0.4.6
