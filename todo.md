@@ -19,6 +19,7 @@
 - [ ] finish multi-method macro
 - [ ] add custom type handling based on https://github.com/MikeBeller/janet-abstract
       also consider [this discussion](https://github.com/janet-lang/janet/discussions/581#discussioncomment-285555)
+- [ ] janet defined types like [janet-abstract](https://github.com/mikebeller/janet-abstract)
 - [ ] improve shell-tools
     - [ ] from moreutils:
         - [ ] chronic: runs a command quietly unless it fails
